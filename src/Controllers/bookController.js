@@ -11,3 +11,13 @@ export async function addBook(req, res) {
         res.status(500).json({ message: "Erro interno do servidor" });
     }
 }
+
+export async function getBooks(req, res) {
+    try {
+        const result = await db.collection("books").find().toArray();
+        res.status(200).send(result);
+    } catch (error) {
+        console.error("Erro ao solicitar livrs:", error);
+        res.status(500).json({ message: "Erro interno do servidor" });
+    }
+}
