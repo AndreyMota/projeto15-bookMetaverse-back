@@ -1,4 +1,4 @@
-import db from "../database/database.connection.js";
+import db from "../Database/databaseConnection.js";
 
 
 export async function validaToken(req, res, next) {

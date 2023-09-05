@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 const clearBookSchema = Joi.object({
-    img: Joi.string().required(),
+    img: Joi.string().uri({ scheme: ['http', 'https'], allowRelative: false }).required(),
     name: Joi.string().required(),
     price: Joi.string().required(),
     section: Joi.string().required()

@@ -1,6 +1,6 @@
-import bcrypt from "bcrypt"
-import db from "../database/database.connection.js"
-import {v4 as uuid} from "uuid"
+import bcrypt from "bcrypt";
+import db from "../Database/databaseConnection.js";
+import { v4 as uuid } from "uuid";
 
 export async function signUp(req, res) {
     const { name, email, password, photo } = req.body
@@ -19,7 +19,7 @@ export async function signUp(req, res) {
     }
 }
 
-export async function signIn(req, res){
+export async function signIn(req, res) {
     const { email, password } = req.body
 
     try {
@@ -27,54 +27,54 @@ export async function signIn(req, res){
         if (!user) return res.status(404).send("E-mail não cadastrado!")
 
         const isPasswordCorrect = bcrypt.compareSync(password, user.password)
-        if (!isPasswordCorrect) return res.status(401).send("Senha incorreta! Tente novamente")
+        if (!isPasswordCorrect) return res.status(401).send("Senha incorreta! Tente novamente!")
 
         const token = uuid()
         await db.collection("sessions").insertOne({ token, userId: user._id })
 
-        res.send({ token, userName: user.name, photo: user.photo})
+        res.send({ token, userName: user.name, photo: user.photo, cart: user.cart })
 
     } catch (err) {
         res.status(500).send(err.message)
     }
 }
 
-export async function logout(req, res) {
-    const token = res.locals.session.token
+export async function logOut(req, res) {
+    const sessionID = res.locals.sessionID;
 
     try {
-        await db.collection("sessions").deleteOne({ token })
-        res.sendStatus(200)//succefully logout
+        await db.collection("sessions").deleteOne({ _id: sessionID });
+        res.sendStatus(200);
     } catch (err) {
         res.status(500).send(err.message)
     }
 }
 
-export async function UserInfo(req, res) {
+export async function getUserInfo(req, res) {
     const authorization = req.headers.authorization;
 
-    if(!authorization) return res.sendStatus(404);
+    if (!authorization) return res.sendStatus(404);
 
     try {
-        const userId = await db.collection("sessions").findOne({ token:authorization });
-        const user = await db.collection('users').findOne({_id:userId.userId});
-        
-        return res.status(200).send({user:{token:authorization,userName:user.name,photo:user.photo, author:user.author, city:user.city, gender:user.gender}});
+        const userId = await db.collection("sessions").findOne({ token: authorization });
+        const user = await db.collection('users').findOne({ _id: userId.userId });
+
+        return res.status(200).send({ user: { token: authorization, userName: user.name, photo: user.photo, author: user.author, city: user.city, gender: user.gender } });
     } catch (err) {
         console.log(err);
         res.status(500).send(err.message)
     }
 }
 
-export async function EditUser(req, res){
+export async function editUserInfo(req, res) {
     const { author, city, genders, photo, name } = req.body
     const authorization = req.headers.authorization;
-    const userId = await db.collection("sessions").findOne({ token:authorization });
-    const user = await db.collection('users').findOne({_id:userId.userId});
-    try{
-        await db.collection("users").updateOne({_id: user._id}, { $set: { author, city, genders, name, photo } })
+    const userId = await db.collection("sessions").findOne({ token: authorization });
+    const user = await db.collection('users').findOne({ _id: userId.userId });
+    try {
+        await db.collection("users").updateOne({ _id: user._id }, { $set: { author, city, genders, name, photo } })
         res.sendStatus(201)
-    } catch{
+    } catch {
         res.status(500).send(err.message)
     }
 }
