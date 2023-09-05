@@ -40,10 +40,10 @@ export async function signIn(req, res) {
 }
 
 export async function logOut(req, res) {
-    const sessionID = res.locals.sessionID;
+    const sessionId = res.locals.sessionId;
 
     try {
-        await db.collection("sessions").deleteOne({ _id: sessionID });
+        await db.collection("sessions").deleteOne({ _id: sessionId });
         res.sendStatus(200);
     } catch (err) {
         res.status(500).send(err.message)
