@@ -6,7 +6,8 @@
   "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon"
+    "start": "node ./src/app.js",
+    "dev": "npx nodemon ./src/app.js"
   },
   "keywords": [],
   "author": "",
