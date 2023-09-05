@@ -11,7 +11,7 @@ export async function signUp(req, res) {
 
         const hash = bcrypt.hashSync(password, 4)
 
-        await db.collection("users").insertOne({ name, email, password: hash, photo })
+        await db.collection("users").insertOne({ name, email, password: hash, photo, cart: [] })
         res.sendStatus(201)
 
     } catch (err) {
