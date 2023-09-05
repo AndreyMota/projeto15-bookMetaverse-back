@@ -4,6 +4,6 @@ import { validaToken } from "../middlewares/validateToken.js";
 import { validaAdic } from "../middlewares/validateCart.js";
 
 const addCartRoute = Router();
-addCartRoute.post('/add-cart', validaToken, validaAdic, addCart);
+addCartRoute.post('/add-cart', validaAdic, addCart); /* validaToken, */
 
 export default addCartRoute;
