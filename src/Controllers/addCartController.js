@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import db from "../database/database.connection.js";
+import db from "../Database/databaseConnection.js";
 
 export async function addCart(req, res) {
     const { id, name, url, amount, subtotal } = req.body;

@@ -3,7 +3,7 @@ import Joi from "joi";
 const validaAdicao = Joi.object({
     id: Joi.string().required(),
     name: Joi.string().required(),
-    url: Joi.string().required(),
+    url: Joi.string().uri({ scheme: ['http', 'https'], allowRelative: false }).required(),
     amount: Joi.number().required()/* Joi.string().valid("entrada", "saida").required() */,
     subtotal: Joi.number().required()
 });

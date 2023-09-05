@@ -1,6 +1,6 @@
-import db from "../database/database.connection.js";
+import db from "../Database/databaseConnection.js";
 
-export async function addBook(req, res) {
+export async function postBook(req, res) {
     try {
         const { img, name, price, section } = req.body;
         const result = await db.collection("books").insertOne({ name, img, price, section });
