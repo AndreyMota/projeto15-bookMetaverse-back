@@ -50,13 +50,29 @@ export async function logout(req, res) {
     }
 }
 
+export async function UserInfo(req, res) {
+    const authorization = req.headers.authorization;
+
+    if(!authorization) return res.sendStatus(404);
+
+    try {
+        const userId = await db.collection("sessions").findOne({ token:authorization });
+        const user = await db.collection('users').findOne({_id:userId.userId});
+        
+        return res.status(200).send({user:{token:authorization,userName:user.name,photo:user.photo, author:user.author, city:user.city, gender:user.gender}});
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err.message)
+    }
+}
+
 export async function EditUser(req, res){
-    const { author, city, gender, photo, name } = req.body
+    const { author, city, genders, photo, name } = req.body
     const authorization = req.headers.authorization;
     const userId = await db.collection("sessions").findOne({ token:authorization });
     const user = await db.collection('users').findOne({_id:userId.userId});
     try{
-        await db.collection("users").updateOne({_id: user._id}, { $set: { author, city, gender, name, photo } })
+        await db.collection("users").updateOne({_id: user._id}, { $set: { author, city, genders, name, photo } })
         res.sendStatus(201)
     } catch{
         res.status(500).send(err.message)

@@ -17,5 +17,5 @@ export const EditUserSchema = joi.object({
     author: joi.string().required(),
     city: joi.string().required(),
     photo: joi.string().required(),
-    gender: joi.string().required(),
+    genders: joi.string().required(),
 })
