@@ -2,7 +2,7 @@ import db from "../Database/databaseConnection.js";
 
 export async function postBook(req, res) {
     try {
-        const { img, name, price, section } = req.body;
+        const { name, img, price, section } = req.body;
         const result = await db.collection("books").insertOne({ name, img, price, section });
     
         res.status(201).json({ message: "Livro adicionado com sucesso", data: result });

@@ -11,7 +11,7 @@ export async function signUp(req, res) {
 
         const hash = bcrypt.hashSync(password, 4)
 
-        await db.collection("users").insertOne({ name, email, password: hash, photo, cart: [] })
+        await db.collection("users").insertOne({ name, email, password: hash, photo, cart: [], orders: [] })
         res.sendStatus(201)
 
     } catch (err) {
@@ -32,7 +32,7 @@ export async function signIn(req, res) {
         const token = uuid()
         await db.collection("sessions").insertOne({ token, userId: user._id })
 
-        res.send({ token, userName: user.name, photo: user.photo, cart: user.cart })
+        res.send({ token, name: user.name, photo: user.photo, cart: user.cart, orders: user.orders })
 
     } catch (err) {
         res.status(500).send(err.message)
