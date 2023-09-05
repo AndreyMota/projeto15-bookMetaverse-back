@@ -9,7 +9,7 @@ const accountRouter = Router();
 accountRouter.post('/cadastro', validateSchema(SignUpSchema), signUp);
 accountRouter.post('/login', validateSchema(SignInSchema), signIn);
 accountRouter.delete('/logout', validateAuth, logOut);
-accountRouter.get('/info-usuario', getUserInfo);
-accountRouter.put('/editar-usuario', validateSchema(EditUserSchema), editUserInfo)
+accountRouter.get('/info-usuario', validateAuth ,getUserInfo);
+accountRouter.put('/editar-usuario', validateAuth,validateSchema(EditUserSchema), editUserInfo)
 
 export default accountRouter;

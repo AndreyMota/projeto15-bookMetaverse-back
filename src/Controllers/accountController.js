@@ -57,7 +57,7 @@ export async function getUserInfo(req, res) {
     try {
         const user = await db.collection("users").findOne({_id: new ObjectId(userId)});
         console.log(user)
-        return res.status(200).send({userName: user.name, photo: user.photo, author: user.author, city: user.city, gender: user.gender });
+        return res.status(200).send({userName: user.name, photo: user.photo, author: user.author, city: user.city, genders: user.genders });
     } catch (err) {
         console.log(err);
         res.status(500).send(err.message)
@@ -68,12 +68,12 @@ export async function editUserInfo(req, res) {
     const { author, city, genders, photo, name } = req.body
     const authorization = req.headers.authorization;
     const userId = res.locals.userId
-    const user = await db.collection("users").findOne({ _id: userId });
+    const user = await db.collection("users").findOne({ _id: new ObjectId(userId)});
     try {
-        console.log(authorization)
-        await db.collection("users").updateOne({ _id: user._id }, { $set: { author, city, genders, name, photo } })
+        const teste = await db.collection("users").updateOne({ _id: user._id }, { $set: { author, city, genders, name, photo } })
+        console.log(user)
         res.sendStatus(201)
-    } catch {
+    } catch (err){
         res.status(500).send(err.message)
     }
 }
