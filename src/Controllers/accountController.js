@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import db from "../Database/databaseConnection.js";
 import { v4 as uuid } from "uuid";
+import { ObjectId } from "mongodb"
 
 export async function signUp(req, res) {
     const { name, email, password, photo } = req.body
@@ -11,7 +12,7 @@ export async function signUp(req, res) {
 
         const hash = bcrypt.hashSync(password, 4)
 
-        await db.collection("users").insertOne({ name, email, password: hash, photo, cart: [], orders: [] })
+        await db.collection("users").insertOne({ name, email, password: hash, photo, cart: [], orders: []})
         res.sendStatus(201)
 
     } catch (err) {
@@ -51,15 +52,12 @@ export async function logOut(req, res) {
 }
 
 export async function getUserInfo(req, res) {
-    const authorization = req.headers.authorization;
-
-    if (!authorization) return res.sendStatus(404);
+    const userId = res.locals.userId
 
     try {
-        const userId = await db.collection("sessions").findOne({ token: authorization });
-        const user = await db.collection('users').findOne({ _id: userId.userId });
-
-        return res.status(200).send({ user: { token: authorization, userName: user.name, photo: user.photo, author: user.author, city: user.city, gender: user.gender } });
+        const user = await db.collection("users").findOne({_id: new ObjectId(userId)});
+        console.log(user)
+        return res.status(200).send({userName: user.name, photo: user.photo, author: user.author, city: user.city, gender: user.gender });
     } catch (err) {
         console.log(err);
         res.status(500).send(err.message)
@@ -69,9 +67,10 @@ export async function getUserInfo(req, res) {
 export async function editUserInfo(req, res) {
     const { author, city, genders, photo, name } = req.body
     const authorization = req.headers.authorization;
-    const userId = await db.collection("sessions").findOne({ token: authorization });
-    const user = await db.collection('users').findOne({ _id: userId.userId });
+    const userId = res.locals.userId
+    const user = await db.collection("users").findOne({ _id: userId });
     try {
+        console.log(authorization)
         await db.collection("users").updateOne({ _id: user._id }, { $set: { author, city, genders, name, photo } })
         res.sendStatus(201)
     } catch {
